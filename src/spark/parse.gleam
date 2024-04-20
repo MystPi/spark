@@ -212,7 +212,12 @@ fn atom() -> Parser(ast.Expression) {
 
 fn module_access() -> Parser(ast.Expression) {
   use name <- do(module_name())
-  use _ <- do(chomp.token(token.Dot))
+  use _ <- do(
+    chomp.token(token.Dot)
+    |> chomp.or_error(
+      "I expected a module access using a dot: modules cannot be used as values",
+    ),
+  )
   use field <- do(ident())
   return(ast.ModuleAccess(name, field))
 }
