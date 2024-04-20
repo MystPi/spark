@@ -192,7 +192,8 @@ fn primary() -> Parser(ast.Expression) {
 
 fn atom() -> Parser(ast.Expression) {
   use name <- do(atom_name())
-  use payload <- do(
+  use payload <- do_in(
+    ctx.InAtom,
     chomp.one_of([
       {
         use _ <- do(chomp.token(token.LParen))
@@ -205,7 +206,7 @@ fn atom() -> Parser(ast.Expression) {
         return([payload])
       },
     ])
-    |> chomp.or([]),
+      |> chomp.or([]),
   )
   return(ast.Atom(name, payload))
 }

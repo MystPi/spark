@@ -11,6 +11,7 @@ pub type Ctx {
   InLet(String)
   InList
   InRecord
+  InAtom
   InLambda
   InBackpass
   InCase
@@ -47,6 +48,7 @@ fn ctx_to_string(pair: #(lexer.Span, Ctx)) -> String {
     InLet(name) -> "in let `" <> ansi.blue(name) <> "`"
     InList -> "inside a list"
     InRecord -> "inside a record"
+    InAtom -> "inside an atom"
     InLambda -> "inside a lambda"
     InBackpass -> "inside a backpass"
     InCase -> "inside a case expression"
