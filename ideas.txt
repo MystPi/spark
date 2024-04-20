@@ -1,0 +1,58 @@
+import Spark/IO
+import Spark/Result
+
+def pub main = with IO.then {
+  IO.println("Hello, world!")
+  let name = IO.readln()
+  IO.println("Hey there, " + name + "!")
+}
+
+def pub main = do IO.then {
+  let contents = IO.read("./test.txt")
+  IO.write("./test.txt", contents + " appended!")
+  IO.println("yay")
+}
+
+def println\text =
+  @IO {
+    perform: \ -> external "
+      console.log(text);
+      return $.nil();
+    "
+  }
+
+def then\action, f =
+  @IO {
+    perform: \ -> f(action.perform()).perform()
+  }
+
+def test =
+  \_ <- println("Hello!") |> then
+  println("Goodbye, now.")
+
+def external = with Chomp.do {
+  Chomp.token(@external)
+  let code = string()
+  return(@external(code))
+}
+
+def string =
+  Chomp.take_map(\tok ->
+    case tok
+    | @string of x = @some of x
+    | _ = @none
+  )
+
+def pub try\result, then =
+  case result
+  | @ok of payload = then(payload)
+  | @ok = then()
+  | any @error as error = error
+
+def write\path, contents = # ...
+def read\path = # ...
+
+def pub main =
+  \contents <- read("./test.txt") |> try
+  \<- write("./test.txt", contents + " appended!") |> try
+  io.println("I did it!!")

@@ -4,10 +4,22 @@
 
 import gleam/option.{type Option}
 
-/// A module contains multiple top-level declarations.
+/// A module contains multiple imports and top-level declarations.
 ///
 pub type Module {
-  Module(declarations: List(Declaration))
+  Module(imports: List(Import), declarations: List(Declaration))
+}
+
+/// An import consists of the following:
+///
+///   import foo/bar/baz as blah
+///
+/// - The base module name: "foo"
+/// - Any paths: ["bar", "baz"]
+/// - An optional rename: Some("blah")
+///
+pub type Import {
+  Import(base: String, path: List(String), rename: Option(String))
 }
 
 /// A declaration is something at the top-level of a module.
@@ -39,7 +51,10 @@ pub type Expression {
   Number(value: Float)
   String(value: String)
   Variable(name: String)
+  ModuleAccess(module: String, field: String)
   List(values: List(Expression))
+  Record(fields: List(#(String, Expression)), update: Option(Expression))
+  RecordAccess(record: Expression, field: String)
   Lambda(parameters: List(String), body: Expression)
   Call(function: Expression, arguments: List(Expression))
   Let(name: String, value: Expression, body: Expression)
@@ -47,16 +62,18 @@ pub type Expression {
   Unop(op: Unop, operand: Expression)
   Case(subject: Expression, clauses: List(CaseClause))
   External(javascript_code: String)
+  Atom(name: String, payload: List(Expression))
 }
 
 /// Binary operators have two operands.
 ///
 pub type Binop {
-  // Math: +, -, *, /
+  // Math: +, -, *, /, ^
   Add
   Sub
   Mul
   Div
+  Pow
   // Equality: ==, !=
   Eq
   Ne
@@ -77,9 +94,7 @@ pub type Binop {
 /// Unary operators have one operand.
 ///
 pub type Unop {
-  // Math: -
   Neg
-  // Logical: !
   Not
 }
 
@@ -93,9 +108,11 @@ pub type CaseClause {
 ///
 pub type Pattern {
   ListPattern(list: List(Pattern), tail: Option(String))
+  RecordPattern(fields: List(#(String, Pattern)))
   VariablePattern(name: String)
   NamedPattern(pattern: Pattern, name: String)
   IgnorePattern
   NumberPattern(value: Float)
   StringPattern(value: String)
+  AtomPattern(name: String, payload: List(Pattern))
 }
