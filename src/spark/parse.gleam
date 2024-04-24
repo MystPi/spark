@@ -527,10 +527,8 @@ fn series_of(parser: Parser(a), sep: token.TokenType) -> Parser(List(a)) {
   let continue = {
     use x <- do(parser)
     chomp.one_of([
-      {
-        use _ <- do(separator(sep))
-        return(chomp.Continue([x, ..xs]))
-      },
+      separator(sep)
+        |> chomp.replace(chomp.Continue([x, ..xs])),
       break_with([x, ..xs]),
     ])
   }
