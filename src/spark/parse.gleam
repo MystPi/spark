@@ -70,7 +70,7 @@ fn function() -> Parser(ast.Declaration) {
     ctx.InFunction(name),
     {
       use _ <- do(chomp.token(token.Backslash))
-      sequence1(ident(), chomp.token(token.Comma))
+      sequence1(ident(), separator(token.Comma))
     }
       |> chomp.or([]),
   )
@@ -287,7 +287,7 @@ fn lambda_like() -> Parser(ast.Expression) {
   // of parameters, we have this intermediate parser so we don't have to use
   // backtracking.
   use _ <- do(chomp.token(token.Backslash))
-  use parameters <- do(chomp.sequence(ident(), chomp.token(token.Comma)))
+  use parameters <- do(chomp.sequence(ident(), separator(token.Comma)))
 
   chomp.one_of([do_lambda(parameters), do_backpass(parameters)])
   |> chomp.or_error("I expected a lambda or backpass (-> or <-)")
