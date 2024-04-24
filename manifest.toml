@@ -5,6 +5,7 @@ packages = [
   { name = "argv", version = "1.0.2", build_tools = ["gleam"], requirements = [], otp_app = "argv", source = "hex", outer_checksum = "BA1FF0929525DEBA1CE67256E5ADF77A7CDDFE729E3E3F57A5BDCAA031DED09D" },
   { name = "birdie", version = "1.1.2", build_tools = ["gleam"], requirements = ["argv", "filepath", "glance", "gleam_community_ansi", "gleam_erlang", "gleam_stdlib", "justin", "rank", "simplifile", "trie_again"], otp_app = "birdie", source = "hex", outer_checksum = "F9666AEB5F6EDFAE6ADF9DFBF10EF96A4EDBDDB84B854C29B9A3F615A6436311" },
   { name = "chomp", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], source = "local", path = "../chomp-nibble" },
+  { name = "dedent", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "dedent", source = "hex", outer_checksum = "591C78F019CFE8B4F138BDCA5DB57EB429D95F90CD12B51262A3FC6455EC1AEF" },
   { name = "filepath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "EFB6FF65C98B2A16378ABC3EE2B14124168C0CE5201553DE652E2644DCFDB594" },
   { name = "glam", version = "2.0.0", build_tools = ["gleam"], requirements = ["birdie", "gleam_stdlib"], otp_app = "glam", source = "hex", outer_checksum = "1C10BE5EA72659E409DC2325BA5E94E0CC92C6C50B2A1DBADE6D07E8C9484D51" },
   { name = "glance", version = "0.9.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "glexer"], otp_app = "glance", source = "hex", outer_checksum = "4866132929EAA47649FBBDBD7C4FDBEB7E30938AA34561E4486640D8ABDE3C88" },
@@ -26,6 +27,8 @@ packages = [
 
 [requirements]
 chomp = { path = "../chomp-nibble" }
+dedent = { version = ">= 1.0.0 and < 2.0.0" }
+glam = { version = ">= 2.0.0 and < 3.0.0" }
 gleam_community_ansi = { version = ">= 1.4.0 and < 2.0.0" }
 gleam_stdlib = { version = "~> 0.34 or ~> 1.0" }
 gleeunit = { version = "~> 1.0" }

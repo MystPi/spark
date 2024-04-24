@@ -72,6 +72,8 @@ fn parse_error_to_string(error, pos: Span, ctx_stack) {
         "I wasn't expecting this: " <> token.to_string(unexpected)
 
       chomp.Custom(message) -> message
+
+      chomp.BadParser(_) -> panic as "there should be no bad parsers"
     }
     <> "\n\n> This is a "
     <> ansi.italic("syntax error")

@@ -1,6 +1,6 @@
 import gleam/io
 import gleam/result
-import pprint
+import spark/compile
 import spark/error
 import spark/lex
 import spark/parse
@@ -54,7 +54,7 @@ pub fn main() {
 
     def then\\action, f =
       @IO {
-        perform: \\ -> action |> perform |> f |> perform
+        perform: \\ -> f(action.perform()).perform()
       }
 
     def perform\\action =
@@ -71,12 +71,13 @@ pub fn main() {
   let result = {
     use tokens <- result.try(lex.lex(source))
     use ast <- result.try(parse.parse(tokens))
-    Ok(ast)
+    let compiled = compile.compile(ast)
+    Ok(compiled)
   }
 
   case result {
-    Ok(ast) -> {
-      pprint.debug(ast)
+    Ok(js) -> {
+      io.println(js)
       Nil
     }
     Error(e) ->

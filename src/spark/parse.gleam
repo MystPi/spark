@@ -50,7 +50,7 @@ fn import_() -> Parser(ast.Import) {
     }),
   )
 
-  return(ast.Import(base, path, rename))
+  return(ast.Import([base, ..path], rename))
 }
 
 // -- Declarations --
@@ -175,8 +175,10 @@ fn call() -> Parser(ast.Expression) {
 
 fn primary() -> Parser(ast.Expression) {
   chomp.one_of([
-    number()
-      |> chomp.map(ast.Number),
+    int()
+      |> chomp.map(ast.Int),
+    float()
+      |> chomp.map(ast.Float),
     string()
       |> chomp.map(ast.String),
     ident()
@@ -277,7 +279,7 @@ fn group() -> Parser(ast.Expression) {
   use _ <- do(chomp.token(token.LParen))
   use expression <- do(expression())
   use _ <- do(chomp.token(token.RParen))
-  return(expression)
+  return(ast.Group(expression))
 }
 
 fn lambda_like() -> Parser(ast.Expression) {
@@ -348,8 +350,10 @@ fn case_clause() -> Parser(ast.CaseClause) {
 fn pattern() -> Parser(ast.Pattern) {
   use pattern <- do(
     chomp.one_of([
-      number()
-        |> chomp.map(ast.NumberPattern),
+      int()
+        |> chomp.map(ast.IntPattern),
+      float()
+        |> chomp.map(ast.FloatPattern),
       string()
         |> chomp.map(ast.StringPattern),
       variable_pattern(),
@@ -492,14 +496,24 @@ fn string() -> Parser(String) {
   |> chomp.or_error("I expected a string literal")
 }
 
-fn number() -> Parser(Float) {
+fn int() -> Parser(Int) {
   chomp.take_map(fn(tok) {
     case tok {
-      token.Number(n) -> Some(n)
+      token.Int(n) -> Some(n)
       _ -> None
     }
   })
-  |> chomp.or_error("I expected a number literal")
+  |> chomp.or_error("I expected a int literal")
+}
+
+fn float() -> Parser(Float) {
+  chomp.take_map(fn(tok) {
+    case tok {
+      token.Float(n) -> Some(n)
+      _ -> None
+    }
+  })
+  |> chomp.or_error("I expected a float literal")
 }
 
 fn series_of(parser: Parser(a), sep: token.TokenType) -> Parser(List(a)) {

@@ -1,5 +1,4 @@
 import chomp/lexer.{type Lexer}
-import gleam/int
 import gleam/result
 import gleam/set
 import gleam/string
@@ -35,8 +34,7 @@ fn lexer() -> Lexer(TokenType, Nil) {
     ambiguous_tokens(),
     // Literals & identifiers
     lexer.string("\"", token.String),
-    lexer.number(int.to_float, fn(x) { x })
-      |> lexer.map(token.Number),
+    lexer.number(token.Int, token.Float),
     lexer.identifier("@", "[a-zA-Z0-9_]", keywords, token.Atom),
     lexer.identifier("[a-z_]", "[a-zA-Z0-9_?]", keywords, token.Ident),
     lexer.identifier("[A-Z]", "[a-zA-Z0-9_?]", keywords, token.Module),

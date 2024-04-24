@@ -18,8 +18,10 @@ pub type Module {
 /// - Any paths: ["bar", "baz"]
 /// - An optional rename: Some("blah")
 ///
+/// The path list is guaranteed to have at least one element by the parser.
+///
 pub type Import {
-  Import(base: String, path: List(String), rename: Option(String))
+  Import(path: List(String), rename: Option(String))
 }
 
 /// A declaration is something at the top-level of a module.
@@ -48,9 +50,12 @@ pub type Publicity {
 /// language.
 ///
 pub type Expression {
-  Number(value: Float)
+  Int(value: Int)
+  Float(value: Float)
   String(value: String)
   Variable(name: String)
+  Atom(name: String, payload: List(Expression))
+  Group(expression: Expression)
   ModuleAccess(module: String, field: String)
   List(values: List(Expression))
   Record(fields: List(#(String, Expression)), update: Option(Expression))
@@ -62,7 +67,6 @@ pub type Expression {
   Unop(op: Unop, operand: Expression)
   Case(subject: Expression, clauses: List(CaseClause))
   External(javascript_code: String)
-  Atom(name: String, payload: List(Expression))
 }
 
 /// Binary operators have two operands.
@@ -112,7 +116,8 @@ pub type Pattern {
   VariablePattern(name: String)
   NamedPattern(pattern: Pattern, name: String)
   IgnorePattern
-  NumberPattern(value: Float)
+  IntPattern(value: Int)
+  FloatPattern(value: Float)
   StringPattern(value: String)
   AtomPattern(name: String, payload: List(Pattern))
 }
