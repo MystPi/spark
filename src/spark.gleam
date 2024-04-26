@@ -48,24 +48,24 @@ pub fn main() {
       @IO {
         perform: \\ -> external \"
           console.log(text);
-          return $.nil();
+          return $.nil;
         \"
       }
 
-    def then\\action, f =
+    def then\\@IO { perform }, f =
       @IO {
-        perform: \\ -> f(action.perform()).perform()
+        perform: \\ -> f(perform()).perform()
       }
-
-    def perform\\action =
-      case action
-      | @IO { perform } = perform()
 
     def test =
       \\_ <- println(\"Hello!\") |> then
       println(\"Goodbye, now.\")
 
+    # Atoms don't need a name! Unnamed atoms are basically tuples.
     const me = @(\"Joe\", 30)
+
+    def pub first\\@(a, _) = a
+    def pub second\\@(_, b) = b
     "
 
   let result = {

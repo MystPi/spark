@@ -29,7 +29,7 @@ pub type Import {
 pub type Declaration {
   Function(
     name: String,
-    parameters: List(String),
+    parameters: List(Pattern),
     body: Expression,
     publicity: Publicity,
   )
@@ -60,7 +60,7 @@ pub type Expression {
   List(values: List(Expression))
   Record(fields: List(#(String, Expression)), update: Option(Expression))
   RecordAccess(record: Expression, field: String)
-  Lambda(parameters: List(String), body: Expression)
+  Lambda(parameters: List(Pattern), body: Expression)
   Call(function: Expression, arguments: List(Expression))
   Let(name: String, value: Expression, body: Expression)
   Binop(op: Binop, left: Expression, right: Expression)

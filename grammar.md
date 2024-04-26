@@ -15,7 +15,7 @@ declaration
   | external -> TopLevelExternal
   ;
 
-function = "def" ["pub"] IDENT "\\" [comma_sep<IDENT>] "=" expression ;
+function = "def" ["pub"] IDENT "\\" [comma_sep<pattern>] "=" expression ;
 
 constant = "const" ["pub"] IDENT "=" expression ;
 
@@ -60,9 +60,9 @@ record_field = IDENT [":" expression] ;
 
 external = "external" STRING ;
 
-lambda = "\\" [comma_sep<IDENT>] "->" expression ;
+lambda = "\\" [comma_sep<pattern>] "->" expression ;
 
-backpass = "\\" [comma_sep<IDENT>] "<-" expression expression ;
+backpass = "\\" [comma_sep<pattern>] "<-" expression expression ;
 
 let = "let" Ident "=" expression "in" expression ;
 

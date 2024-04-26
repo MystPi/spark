@@ -65,10 +65,14 @@ export function eq(a, b) {
   return false;
 }
 
-export function checkArgs(args, expected) {
+export function checkArgs(name, args, expected, matchesPattern) {
   if (args.length !== expected) {
     throw new Error(
-      'Expected ' + expected + ' argument(s), got ' + arguments.length
+      `\`${name}\` expects ${expected} argument(s), got ${args.length}`
     );
+  }
+
+  if (matchesPattern !== undefined && !matchesPattern()) {
+    throw new Error(`Argument(s) given to \`${name}\` didn't match pattern`);
   }
 }

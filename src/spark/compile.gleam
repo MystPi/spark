@@ -85,10 +85,13 @@ fn compile_declaration(declaration: ast.Declaration) -> Document {
 
 fn compile_function(
   name: String,
-  parameters: List(String),
+  parameters: List(ast.Pattern),
   body: ast.Expression,
   publicity: ast.Publicity,
 ) -> Document {
+  let #(checks, bindings) =
+    pattern.traverse_list(parameters, doc.from_string("arguments"))
+
   let publicity = case publicity {
     ast.Public -> doc.from_string("export ")
     ast.Private -> doc.empty
@@ -97,16 +100,17 @@ fn compile_function(
   let body =
     [
       doc.line,
-      gen_arguments_check(list.length(parameters)),
-      doc.lines(2),
+      gen_arguments_check(name, list.length(parameters), checks),
+      doc.line,
+      gen_bindings(bindings),
+      doc.line,
       gen_return(compile_expression(body)),
     ]
     |> doc.nest_docs(by: 2)
 
   doc.concat([
     publicity,
-    doc.from_string("function " <> util.legalize(name)),
-    gen_parameters_list(parameters),
+    doc.from_string("function " <> util.legalize(name) <> "()"),
     doc.from_string(" {"),
     body,
     doc.line,
@@ -114,20 +118,25 @@ fn compile_function(
   ])
 }
 
-fn gen_parameters_list(parameters: List(String)) -> Document {
-  parameters
-  |> list.map(fn(param) {
-    param
-    |> util.legalize
-    |> doc.from_string
-  })
-  |> list("(", ")")
-}
-
-fn gen_arguments_check(num_params: Int) -> Document {
-  doc.from_string(
-    "$.checkArgs(arguments, " <> int.to_string(num_params) <> ");",
-  )
+fn gen_arguments_check(
+  name: String,
+  num_params: Int,
+  checks: List(pattern.Check),
+) -> Document {
+  [
+    doc.from_string("'" <> name <> "'"),
+    doc.from_string("arguments"),
+    doc.from_string(int.to_string(num_params)),
+    ..case checks {
+      [] -> []
+      _ -> [
+        [doc.from_string("() =>"), doc.space, pattern.compile_checks(checks)]
+        |> doc.nest_docs(by: 2)
+        |> doc.group,
+      ]
+    }
+  ]
+  |> list("$.checkArgs(", ");")
 }
 
 fn compile_constant(
@@ -236,25 +245,30 @@ fn compile_record_access(record: ast.Expression, field: String) -> Document {
   |> list("$.Record.access(", ")")
 }
 
-fn compile_lambda(parameters: List(String), body: ast.Expression) -> Document {
+fn compile_lambda(
+  parameters: List(ast.Pattern),
+  body: ast.Expression,
+) -> Document {
+  let #(checks, bindings) =
+    pattern.traverse_list(parameters, doc.from_string("arguments"))
+
   let body =
     [
-      doc.space,
-      gen_arguments_check(list.length(parameters)),
-      doc.space,
+      doc.line,
+      gen_arguments_check("ANON", list.length(parameters), checks),
+      doc.line,
+      gen_bindings(bindings),
       gen_return(compile_expression(body)),
     ]
     |> doc.nest_docs(by: 2)
 
   doc.concat([
-    doc.from_string("function"),
-    gen_parameters_list(parameters),
-    doc.from_string(" {"),
+    doc.from_string("function() {"),
     body,
-    doc.space,
+    doc.line,
     doc.from_string("}"),
   ])
-  |> doc.group
+  |> doc.force_break
 }
 
 fn compile_call(
