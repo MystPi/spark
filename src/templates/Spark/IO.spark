@@ -1,0 +1,13 @@
+def pub println\text =
+  \ <- action
+  external "
+    console.log(text);
+    return $.nil;
+  "
+
+def pub then\@IO { perform }, f =
+  \ <- action
+  f(perform()).perform()
+
+def action\perform =
+  @IO { perform }
