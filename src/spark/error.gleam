@@ -87,3 +87,7 @@ fn parse_error_to_string(error, pos: Span, ctx_stack) {
 
   #("syntax error" <> ctx, hint, pos)
 }
+
+pub fn simple_error(message: String) -> String {
+  ansi.red("error") <> ansi.dim(": ") <> ansi.bold(message)
+}

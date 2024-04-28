@@ -1,7 +1,7 @@
 import filepath
 import gleam/result.{try}
-import gleam_community/ansi
 import simplifile
+import spark/error
 
 /// Write a file, creating directories as needed.
 ///
@@ -37,5 +37,5 @@ pub fn get_files(dir: String) -> Result(List(String), String) {
 }
 
 fn file_error(message, path) -> String {
-  ansi.red("I was unable to " <> message <> ": ") <> path
+  error.simple_error("I was unable to " <> message <> ": " <> path)
 }

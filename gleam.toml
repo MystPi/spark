@@ -21,6 +21,7 @@ glam = ">= 2.0.0 and < 3.0.0"
 dedent = ">= 1.0.0 and < 2.0.0"
 filepath = ">= 1.0.0 and < 2.0.0"
 simplifile = ">= 1.7.0 and < 2.0.0"
+tom = ">= 0.3.0 and < 1.0.0"
 
 [dev-dependencies]
 gleeunit = "~> 1.0"

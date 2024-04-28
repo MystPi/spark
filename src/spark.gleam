@@ -2,13 +2,13 @@ import filepath
 import gleam/io
 import gleam/result.{try}
 import gleam/string
+import gleam_community/ansi
 import spark/file
 import spark/project
-import gleam_community/ansi
 
 pub fn main() {
   let result = {
-    use project <- try(project.from("TestProject", "examples/TestProject"))
+    use project <- try(project.from("examples/TestProject"))
     build(project)
   }
 
@@ -24,15 +24,16 @@ fn build(project: project.Project) -> Result(Nil, String) {
   let build_dir = filepath.join(project.dir, "build")
 
   report("Compiling", "Spark")
-  use template <- try(project.from("Spark", "./templates"))
+  use template <- try(project.from("./templates"))
   use _ <- try(project.compile(template, to: build_dir))
 
-  report("Compiling", project.name)
+  report("Compiling", project.config.name)
   use _ <- try(project.compile(project, to: build_dir))
 
   report("Creating", "index file")
   let path = filepath.join(project.dir, "build/index.mjs")
-  let contents = "import { main } from './" <> project.name <> ".mjs';\nmain();"
+  let contents =
+    "import { main } from './" <> project.config.name <> ".mjs';\nmain();"
   use _ <- try(file.write_all(path, contents))
 
   report("Compiled", "successfully")

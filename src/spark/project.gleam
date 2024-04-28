@@ -9,20 +9,37 @@ import spark/lex
 import spark/module.{type Module}
 import spark/parse
 import spark/util
+import tom
 
 // ---- TYPES ------------------------------------------------------------------
 
 pub type Project {
-  Project(name: String, modules: List(Module), extra_files: List(String), dir: String)
+  Project(
+    config: Config,
+    modules: List(Module),
+    extra_files: List(String),
+    dir: String,
+  )
+}
+
+pub type Config {
+  Config(name: String)
 }
 
 // ---- CONSTRUCTOR ------------------------------------------------------------
 
-pub fn from(name: String, dir: String) -> Result(Project, String) {
+pub fn from(dir: String) -> Result(Project, String) {
+  use config_file <- try(
+    file.read(filepath.join(dir, "spark.toml"))
+    |> result.replace_error(error.simple_error(
+      "`spark.toml` config file is missing",
+    )),
+  )
+  use config <- try(parse_config(config_file))
   use #(modules, extra_files) <- try(
     scan_project_files(filepath.join(dir, "src")),
   )
-  Ok(Project(name, modules, extra_files, dir))
+  Ok(Project(config, modules, extra_files, dir))
 }
 
 fn scan_project_files(
@@ -38,6 +55,22 @@ fn scan_project_files(
     }
   })
   |> Ok
+}
+
+fn parse_config(config_file: String) -> Result(Config, String) {
+  use parsed <- try(
+    tom.parse(config_file)
+    |> result.replace_error(error.simple_error(
+      "I was unable to parse the config file as valid TOML",
+    )),
+  )
+  use name <- try(
+    tom.get_string(parsed, ["name"])
+    |> result.replace_error(error.simple_error(
+      "Config is missing the `name` field or it is not a string",
+    )),
+  )
+  Ok(Config(name))
 }
 
 // ---- FUNCTIONS --------------------------------------------------------------
