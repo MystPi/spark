@@ -3,6 +3,10 @@ export class Atom {
     this.name = name;
     this.payload = payload ?? [];
   }
+
+  static hasRecordPayload(atom) {
+    return atom instanceof Atom && atom.payload[0] instanceof Record;
+  }
 }
 
 export function ok(payload) {
@@ -22,14 +26,19 @@ export class Record extends Map {
     if (!(record instanceof Record)) throw new Error(msg);
   }
 
-  static updateRecord(record, fields) {
+  static update(record, fields) {
+    if (Atom.hasRecordPayload(record)) {
+      record = record.payload[0];
+    }
+
     Record.assertRecord(record, 'Cannot update a non-record');
+
     return new Record([...record, ...fields]);
   }
 
   static access(record, field) {
     // An atom can be accessed if the first value in its payload is a record.
-    if (record instanceof Atom && record.payload[0] instanceof Record) {
+    if (Atom.hasRecordPayload(record)) {
       record = record.payload[0];
     }
 
