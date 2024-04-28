@@ -1,3 +1,5 @@
+import gleam/string
+
 pub fn legalize(name: String) -> String {
   case name {
     "await"
@@ -57,5 +59,19 @@ pub fn legalize(name: String) -> String {
       "then" -> name <> "$"
 
     _ -> name
+  }
+}
+
+pub fn remove_prefix(string: String, prefix: String) -> String {
+  case string.starts_with(string, prefix) {
+    True -> string.drop_left(string, string.length(prefix))
+    False -> string
+  }
+}
+
+pub fn capitalise(string: String) -> String {
+  case string.pop_grapheme(string) {
+    Ok(#(first, rest)) -> string.uppercase(first) <> rest
+    _ -> string
   }
 }

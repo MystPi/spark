@@ -19,29 +19,34 @@ import gleam/option.{type Option, None, Some}
 import gleam/string
 import spark/ast
 import spark/compile/pattern
-import spark/compile/util
+import spark/module
+import spark/util
 
 const max_width = 80
 
 // ---- COMPILATION ------------------------------------------------------------
 
-pub fn compile(module: ast.Module) -> String {
-  module
-  |> compile_module
+pub fn compile(module_ast: ast.Module, module: module.Module) -> String {
+  module_ast
+  |> compile_module(module)
   |> doc.to_string(max_width)
 }
 
 // -- Modules --
 
-fn compile_module(module: ast.Module) -> Document {
-  // TODO: actually resolve imports
-  let ast.Module(imports, declarations) = module
+fn compile_module(module_ast: ast.Module, module: module.Module) -> Document {
+  let ast.Module(imports, declarations) = module_ast
 
-  let prelude = doc.from_string("import * as $ from './spark.prelude.mjs';")
+  let prelude =
+    doc.from_string(
+      "import * as $ from '"
+      <> module.resolve_import(module, ["spark.prelude"])
+      <> "';",
+    )
 
   let imports =
     imports
-    |> list.map(compile_import)
+    |> list.map(compile_import(_, module))
     |> list.prepend(prelude)
     |> doc.join(doc.line)
 
@@ -53,16 +58,16 @@ fn compile_module(module: ast.Module) -> Document {
   doc.concat([imports, doc.lines(2), declarations])
 }
 
-fn compile_import(i: ast.Import) -> Document {
-  let ast.Import(import_path, rename) = i
+fn compile_import(i: ast.Import, module: module.Module) -> Document {
+  let ast.Import(import_segments, rename) = i
 
-  let path = "./" <> string.join(import_path, "/") <> ".mjs"
+  let path = module.resolve_import(module, import_segments)
 
   let name =
     case rename {
       Some(rename) -> rename
       None -> {
-        let assert Ok(last) = list.last(import_path)
+        let assert Ok(last) = list.last(import_segments)
         last
       }
     }

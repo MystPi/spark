@@ -1,0 +1,5 @@
+def pub println\text =
+  external "
+    console.log(text);
+    return $.nil;
+  "

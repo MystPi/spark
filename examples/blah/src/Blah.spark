@@ -1,6 +1,0 @@
-import Spark/IO
-
-def pub main =
-  \_ <- IO.println("Hello, world!") |> IO.then
-  \_ <- IO.println("This is the Blah module") |> IO.then
-  IO.println("Bye!")

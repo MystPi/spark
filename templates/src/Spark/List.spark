@@ -1,0 +1,14 @@
+def pub map\list, fn =
+  external "
+    return over.map((x) => fn(x));
+  "
+
+def pub index_map\list, fn =
+  external "
+    return over.map((x, i) => fn(x, i));
+  "
+
+def pub fold\over, acc, fn =
+  external "
+    return over.reduce((acc, x) => fn(acc, x), acc);
+  "

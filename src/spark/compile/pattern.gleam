@@ -6,7 +6,7 @@ import gleam/option.{None, Some}
 import gleam/pair
 import gleam/string
 import spark/ast
-import spark/compile/util
+import spark/util
 
 // ---- TYPES ------------------------------------------------------------------
 

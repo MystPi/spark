@@ -12,16 +12,15 @@ pub type Module {
 
 /// An import consists of the following:
 ///
-///   import foo/bar/baz as blah
+///   import Foo/Bar/Baz as Blah
 ///
-/// - The base module name: "foo"
-/// - Any paths: ["bar", "baz"]
-/// - An optional rename: Some("blah")
+/// - import segments: ["Foo", "Bar", "Baz"]
+/// - An optional rename: Some("Blah")
 ///
-/// The path list is guaranteed to have at least one element by the parser.
+/// The segments list is guaranteed to have at least one element by the parser.
 ///
 pub type Import {
-  Import(path: List(String), rename: Option(String))
+  Import(segments: List(String), rename: Option(String))
 }
 
 /// A declaration is something at the top-level of a module.
