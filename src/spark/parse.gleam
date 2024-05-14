@@ -159,8 +159,8 @@ fn call() -> Parser(ast.Expression) {
   use callee <- chomp.loop(callee)
   chomp.one_of([
     {
-      use _ <- do_in(ctx.InCall, chomp.token(token.LParen))
-      use args <- do(series_of(expression(), token.Comma))
+      use _ <- do(chomp.token(token.LParen))
+      use args <- do_in(ctx.InCall, series_of(expression(), token.Comma))
       use _ <- do(chomp.token(token.RParen))
       return(chomp.Continue(ast.Call(callee, args)))
     },
