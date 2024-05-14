@@ -18,16 +18,20 @@ pub fn from_path(path: String, inside_dir: String) -> Result(Module, Nil) {
 
   let segments = filepath.split(stripped_path)
 
-  case
+  let all_valid =
     segments
     |> list.all(fn(segment) {
-      util.capitalise(segment) == segment
-      && {
-        filepath.extension(segment) == Ok("spark")
-        || filepath.strip_extension(segment) == segment
+      let without_extension = filepath.strip_extension(segment)
+
+      case util.is_valid_module_name(without_extension) {
+        False -> False
+        True ->
+          filepath.extension(segment) == Ok("spark")
+          || without_extension == segment
       }
     })
-  {
+
+  case all_valid {
     False -> Error(Nil)
     True ->
       segments

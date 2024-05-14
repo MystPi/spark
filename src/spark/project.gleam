@@ -1,4 +1,5 @@
 import filepath
+import gleam/dict
 import gleam/list
 import gleam/result.{try}
 import gleam/string
@@ -23,7 +24,7 @@ pub type Project {
 }
 
 pub type Config {
-  Config(name: String)
+  Config(name: String, dependencies: List(#(String, String)))
 }
 
 // ---- CONSTRUCTOR ------------------------------------------------------------
@@ -70,7 +71,38 @@ fn parse_config(config_file: String) -> Result(Config, String) {
       "Config is missing the `name` field or it is not a string",
     )),
   )
-  Ok(Config(name))
+  use dependencies <- try(get_dependencies(parsed))
+  Ok(Config(name, dependencies))
+}
+
+fn get_dependencies(
+  toml: dict.Dict(String, tom.Toml),
+) -> Result(List(#(String, String)), String) {
+  case tom.get_table(toml, ["dependencies"]) {
+    Error(tom.NotFound(_)) -> Ok([])
+
+    Error(tom.WrongType(..)) ->
+      Error(error.simple_error(
+        "`dependencies` must be a table of module names and URLs",
+      ))
+
+    Ok(deps) ->
+      deps
+      |> dict.to_list
+      |> list.try_map(fn(dep) {
+        let #(key, value) = dep
+
+        case util.is_valid_module_name(key), value {
+          True, tom.String(s) -> Ok(#(key, s))
+          False, _ ->
+            Error(error.simple_error(
+              "`" <> key <> "` is not a valid module name",
+            ))
+          _, _ ->
+            Error(error.simple_error("`dependencies` URLs must be strings"))
+        }
+      })
+  }
 }
 
 // ---- FUNCTIONS --------------------------------------------------------------
@@ -108,4 +140,20 @@ pub fn compile(project: Project, to build_dir: String) -> Result(Nil, String) {
     let new_path = util.remove_prefix(path, filepath.join(project.dir, "src"))
     file.copy(path, filepath.join(build_dir, new_path))
   })
+}
+
+/// Create an entrypoint file that runs the project's `main` function. If the
+/// entrypoint was created successfully, the path to the file is returned for
+/// convenience.
+///
+pub fn create_entrypoint(
+  project: Project,
+  in build_dir: String,
+) -> Result(String, String) {
+  let path = filepath.join(build_dir, "index.mjs")
+  let contents =
+    "import { main } from './" <> project.config.name <> ".mjs';\n\nmain();"
+
+  file.write_all(path, contents)
+  |> result.replace(path)
 }

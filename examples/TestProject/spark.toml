@@ -1,1 +1,4 @@
 name = "TestProject"
+
+[dependencies]
+Spark = "https://github.com/MystPi/spark_stdlib/archive/refs/heads/main.tar.gz"
