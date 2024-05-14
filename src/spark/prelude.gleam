@@ -8,9 +8,9 @@ The prelude can be accessed from external embedded code via `$`, enabling you to
 interface with Spark's runtime data types and functions in helpful ways! */
 
 export class Atom {
-  constructor(name, payload) {
+  constructor(name, ...payload) {
     this.name = name;
-    this.payload = payload ?? [];
+    this.payload = payload;
   }
 
   static hasRecordPayload(atom) {
@@ -18,17 +18,17 @@ export class Atom {
   }
 }
 
-export function ok(payload) {
-  return new Atom('ok', payload);
+export function ok(...payload) {
+  return new Atom('ok', ...payload);
 }
 
-export function error(payload) {
-  return new Atom('error', payload);
+export function error(...payload) {
+  return new Atom('error', ...payload);
 }
 
-export const nil = new Atom('nil', []);
-export const true_ = new Atom('true', []);
-export const false_ = new Atom('false', []);
+export const nil = new Atom('nil');
+export const true_ = new Atom('true');
+export const false_ = new Atom('false');
 
 export class Record extends Map {
   static assertRecord(record, msg) {

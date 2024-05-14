@@ -186,9 +186,8 @@ fn compile_expression(expression: ast.Expression) -> Document {
 fn compile_atom(name: String, payload: List(ast.Expression)) -> Document {
   [
     doc.from_string("'" <> name <> "'"),
-    payload
+    ..payload
       |> list.map(compile_expression)
-      |> list("[", "]"),
   ]
   |> list("(", ")")
   |> doc.prepend(doc.from_string("new $.Atom"))
