@@ -108,7 +108,6 @@ fn compile_function(
       gen_arguments_check(name, list.length(parameters), checks),
       doc.line,
       gen_bindings(bindings),
-      doc.line,
       gen_return(compile_expression(body)),
     ]
     |> doc.nest_docs(by: 2)
@@ -261,7 +260,6 @@ fn compile_lambda(
     [
       doc.line,
       gen_arguments_check("ANON", list.length(parameters), checks),
-      doc.line,
       gen_bindings(bindings),
       gen_return(compile_expression(body)),
     ]
