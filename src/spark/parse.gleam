@@ -454,7 +454,7 @@ fn ident() -> Parser(String) {
     token.Ident(x) -> return(x)
     token.Module(_) ->
       throw(
-        "I expected an identifier, but found this module name (all identifiers should begin with a lowercase letter except for module names, which must start with an uppercase letter)",
+        "I expected an identifier, but found this module name (all identifiers should begin with a lowercase letter)",
       )
     _ ->
       case token.is_keyword(tok) {
@@ -472,7 +472,7 @@ fn module_name() -> Parser(String) {
     }
   })
   |> chomp.or_error(
-    "I expected a module name (module names begin with an uppercase letter)",
+    "I expected a module name (module names begin with an uppercase letter and consist only of letters and numbers)",
   )
 }
 

@@ -37,7 +37,7 @@ fn lexer() -> Lexer(TokenType, Nil) {
     lexer.number(token.Int, token.Float),
     lexer.identifier("@", "[a-zA-Z0-9_]", keywords, token.Atom),
     lexer.identifier("[a-z_]", "[a-zA-Z0-9_?]", keywords, token.Ident),
-    lexer.identifier("[A-Z]", "[a-zA-Z0-9_?]", keywords, token.Module),
+    lexer.identifier("[A-Z]", "[a-zA-Z0-9]", keywords, token.Module),
     // These tokens don't need custom lexing rules
     lexer.token("(", token.LParen),
     lexer.token(")", token.RParen),
