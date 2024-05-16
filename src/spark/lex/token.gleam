@@ -1,4 +1,5 @@
 import chomp/lexer
+import chomp/span
 import gleam/string
 
 pub type Tokens =
@@ -8,7 +9,7 @@ pub type Token =
   lexer.Token(TokenType)
 
 pub type Span =
-  lexer.Span
+  span.Span
 
 pub type TokenType {
   // Literals

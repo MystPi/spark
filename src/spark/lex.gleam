@@ -1,4 +1,5 @@
 import chomp/lexer.{type Lexer}
+import chomp/span
 import gleam/result
 import gleam/set
 import gleam/string
@@ -15,7 +16,7 @@ pub fn lex(input: String) {
     lexeme
     |> string.first
     |> result.unwrap("")
-    |> error.LexError(lexer.Span(row, col, row, col + 1))
+    |> error.LexError(span.Span(row, col, row, col + 1))
   })
 }
 

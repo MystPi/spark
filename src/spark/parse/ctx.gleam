@@ -1,4 +1,4 @@
-import chomp/lexer
+import chomp/span
 import gleam/int
 import gleam/list
 import gleam_community/ansi
@@ -22,7 +22,7 @@ pub type Ctx {
 }
 
 pub type Stack =
-  List(#(lexer.Span, Ctx))
+  List(#(span.Span, Ctx))
 
 // ----
 
@@ -39,7 +39,7 @@ pub fn stack_to_string(stack: Stack) -> String {
   }
 }
 
-fn ctx_to_string(pair: #(lexer.Span, Ctx)) -> String {
+fn ctx_to_string(pair: #(span.Span, Ctx)) -> String {
   let #(pos, ctx) = pair
 
   case ctx {
@@ -61,7 +61,7 @@ fn ctx_to_string(pair: #(lexer.Span, Ctx)) -> String {
   <> ansi.dim(pos_to_string(pos))
 }
 
-fn pos_to_string(pos: lexer.Span) -> String {
+fn pos_to_string(pos: span.Span) -> String {
   "("
   <> int.to_string(pos.row_start)
   <> ":"

@@ -1,5 +1,5 @@
 import chomp
-import chomp/lexer.{type Span}
+import chomp/span.{type Span, Span}
 import gleam_community/ansi
 import hug
 import spark/lex/token
@@ -81,7 +81,7 @@ fn parse_error_to_string(error, pos: Span, ctx_stack) {
 
   let pos = case error {
     chomp.EndOfInput ->
-      lexer.Span(pos.row_end, pos.col_end, pos.row_end, pos.col_end + 1)
+      Span(pos.row_end, pos.col_end, pos.row_end, pos.col_end + 1)
     _ -> pos
   }
 
