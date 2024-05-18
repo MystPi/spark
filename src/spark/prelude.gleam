@@ -94,6 +94,34 @@ export function checkArgs(name, args, expected, matchesPattern) {
     throw new Error(`Argument(s) given to \\`${name}\\` didn't match pattern`);
   }
 }
+
+export function stringify(x) {
+  if (Array.isArray(x)) {
+    return '[' + x.map(stringify).join(', ') + ']';
+  }
+
+  if (x instanceof Atom) {
+    if (Atom.hasRecordPayload(x) && x.payload.length === 1) {
+      return '@' + x.name + ' ' + stringify(x.payload[0]);
+    } else {
+      return '@' + x.name + '(' + x.payload.map(stringify).join(', ') + ')';
+    }
+  }
+
+  if (x instanceof Record) {
+    return (
+      '{' +
+      [...x].map(([key, value]) => key + ': ' + stringify(value)).join(', ') +
+      '}'
+    );
+  }
+
+  if (typeof x === 'string') {
+    return JSON.stringify(x);
+  }
+
+  return x.toString();
+}
 "
 
 /// Create a copy of the prelude JavaScript module to the given build directory.

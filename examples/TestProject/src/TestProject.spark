@@ -12,8 +12,8 @@ const squares = List.map([1, 2, 3], \x -> x * x)
 def pub main =
   IO.println("Hello, world!") ;
   IO.println("Goodbye, now.") ;
-  IO.println(squares) ;
-  IO.println(@(fresh_id(), fresh_id(), fresh_id()))
+  IO.debug(squares) ;
+  IO.debug(@(fresh_id(), fresh_id(), fresh_id()))
 
 # Atoms don't need a name! Unnamed atoms are basically tuples.
 const me = @("Joe", 30)
