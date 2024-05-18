@@ -18,7 +18,7 @@ runtime = "bun"
 
 [dependencies]
 gleam_stdlib = "~> 0.34 or ~> 1.0"
-chomp = { path = "../chomp-nibble" }
+chomp = ">= 0.1.0 and < 1.0.0"
 gleam_community_ansi = ">= 1.4.0 and < 2.0.0"
 hug = ">= 1.0.2 and < 2.0.0"
 glam = ">= 2.0.0 and < 3.0.0"
