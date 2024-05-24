@@ -1,25 +1,16 @@
-# spark
+# Spark
 
-[![Package Version](https://img.shields.io/hexpm/v/spark)](https://hex.pm/packages/spark)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/spark/)
+Compile-to-JS language built in Gleam.
 
-```sh
-gleam add spark
-```
-```gleam
-import spark
+- Functional
+- Pattern matching
+- Convenient FFI (interfacing with JS)
 
-pub fn main() {
-  // TODO: An example of the project in use
-}
-```
-
-Further documentation can be found at <https://hexdocs.pm/spark>.
+> 🚨 Spark is a learning project and is not meant to be used as a replacement for other languages.
 
 ## Development
 
 ```sh
 gleam run   # Run the project
 gleam test  # Run the tests
-gleam shell # Run an Erlang shell
 ```
