@@ -259,6 +259,7 @@ fn compile_lambda(
     [
       doc.line,
       gen_arguments_check("ANON", list.length(parameters), checks),
+      doc.line,
       gen_bindings(bindings),
       gen_return(compile_expression(body)),
     ]
