@@ -61,7 +61,7 @@ pub type Expression {
   RecordAccess(record: Expression, field: String)
   Lambda(parameters: List(Pattern), body: Expression)
   Call(function: Expression, arguments: List(Expression))
-  Let(name: String, value: Expression, body: Expression)
+  Let(bindings: List(#(String, Expression)), body: Expression)
   Binop(op: Binop, left: Expression, right: Expression)
   Unop(op: Unop, operand: Expression)
   Case(subject: Expression, clauses: List(CaseClause))

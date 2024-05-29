@@ -322,12 +322,17 @@ fn do_backpass(parameters: List(ast.Pattern)) -> Parser(ast.Expression) {
 
 fn let_() -> Parser(ast.Expression) {
   use _ <- do(chomp.token(token.Let))
-  use name <- do(ident())
-  use _ <- do_in(ctx.InLet(name), chomp.token(token.Eq))
-  use value <- do(expression())
+  use bindings <- do_in(ctx.InLet, chomp.many1(let_binding()))
   use _ <- do(chomp.token(token.In))
   use body <- do(expression())
-  return(ast.Let(name, value, body))
+  return(ast.Let(bindings, body))
+}
+
+fn let_binding() -> Parser(#(String, ast.Expression)) {
+  use name <- do(ident())
+  use _ <- do(chomp.token(token.Eq))
+  use value <- do(expression())
+  return(#(name, value))
 }
 
 fn case_() -> Parser(ast.Expression) {

@@ -64,7 +64,7 @@ lambda = "\\" [comma_sep<pattern>] "->" expression ;
 
 backpass = "\\" [comma_sep<pattern>] "<-" expression expression ;
 
-let = "let" Ident "=" expression "in" expression ;
+let = "let" (Ident "=" expression)+ "in" expression ;
 
 case = "case" expression ("|" pattern "=" expression)+ ;
 

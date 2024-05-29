@@ -172,7 +172,7 @@ fn compile_expression(expression: ast.Expression) -> Document {
     ast.RecordAccess(record, field) -> compile_record_access(record, field)
     ast.Lambda(parameters, body) -> compile_lambda(parameters, body)
     ast.Call(function, arguments) -> compile_call(function, arguments)
-    ast.Let(name, value, body) -> compile_let(name, value, body)
+    ast.Let(bindings, body) -> compile_let(bindings, body)
     ast.Binop(op, left, right) -> compile_binop(op, left, right)
     ast.Unop(op, operand) -> compile_unop(op, operand)
     ast.Case(subject, clauses) -> compile_case(subject, clauses)
@@ -285,15 +285,18 @@ fn compile_call(
 }
 
 fn compile_let(
-  name: String,
-  value: ast.Expression,
+  bindings: List(#(String, ast.Expression)),
   body: ast.Expression,
 ) -> Document {
-  doc.concat([
-    gen_const(util.legalize(name), compile_expression(value)),
-    doc.line,
-    gen_return(compile_expression(body)),
-  ])
+  let bindings =
+    bindings
+    |> list.map(fn(binding) {
+      let #(name, value) = binding
+      gen_const(util.legalize(name), compile_expression(value))
+    })
+    |> doc.join(doc.line)
+
+  doc.concat([bindings, doc.line, gen_return(compile_expression(body))])
   |> wrap_with_iife
 }
 

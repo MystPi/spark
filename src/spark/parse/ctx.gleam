@@ -8,7 +8,7 @@ import gleam_community/ansi
 pub type Ctx {
   InFunction(String)
   InConstant(String)
-  InLet(String)
+  InLet
   InList
   InRecord
   InAtom
@@ -45,7 +45,7 @@ fn ctx_to_string(pair: #(span.Span, Ctx)) -> String {
   case ctx {
     InFunction(name) -> "in the function `" <> ansi.blue(name) <> "`"
     InConstant(name) -> "in the constant `" <> ansi.blue(name) <> "`"
-    InLet(name) -> "in let `" <> ansi.blue(name) <> "`"
+    InLet -> "in a let expression"
     InList -> "inside a list"
     InRecord -> "inside a record"
     InAtom -> "inside an atom"
