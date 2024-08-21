@@ -567,7 +567,7 @@ fn il(
   token: TokenType,
   apply: fn(ast.Expression, ast.Expression) -> ast.Expression,
 ) {
-  pratt.infix_left(precedence, chomp.token(token), apply)
+  pratt.infix(pratt.Left(precedence), chomp.token(token), apply)
 }
 
 fn ir(
@@ -575,7 +575,7 @@ fn ir(
   token: TokenType,
   apply: fn(ast.Expression, ast.Expression) -> ast.Expression,
 ) {
-  pratt.infix_right(precedence, chomp.token(token), apply)
+  pratt.infix(pratt.Right(precedence), chomp.token(token), apply)
 }
 
 fn pre(precedence: Int, token: TokenType, op: ast.Unop) {
