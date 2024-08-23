@@ -3,7 +3,7 @@
 
 packages = [
   { name = "argv", version = "1.0.2", build_tools = ["gleam"], requirements = [], otp_app = "argv", source = "hex", outer_checksum = "BA1FF0929525DEBA1CE67256E5ADF77A7CDDFE729E3E3F57A5BDCAA031DED09D" },
-  { name = "chomp", version = "0.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "chomp", source = "hex", outer_checksum = "E8A48AE26118C79A9263E03AAB7D4EE6AC252FF64084B027547A0A0017831CE9" },
+  { name = "chomp", version = "0.2.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "chomp", source = "hex", outer_checksum = "2E4D1225BC3ACCB3029445C39173D7D7CFED905A9F16D9ADC6C9F51448B93EBF" },
   { name = "dedent", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "dedent", source = "hex", outer_checksum = "591C78F019CFE8B4F138BDCA5DB57EB429D95F90CD12B51262A3FC6455EC1AEF" },
   { name = "filepath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "EFB6FF65C98B2A16378ABC3EE2B14124168C0CE5201553DE652E2644DCFDB594" },
   { name = "glam", version = "2.0.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "glam", source = "hex", outer_checksum = "66EC3BCD632E51EED029678F8DF419659C1E57B1A93D874C5131FE220DFAD2B2" },
@@ -23,7 +23,7 @@ packages = [
 
 [requirements]
 argv = { version = ">= 1.0.2 and < 2.0.0" }
-chomp = { version = ">= 0.2.0 and < 1.0.0" }
+chomp = { version = ">= 0.2.1 and < 1.0.0" }
 dedent = { version = ">= 1.0.0 and < 2.0.0" }
 filepath = { version = ">= 1.0.0 and < 2.0.0" }
 glam = { version = ">= 2.0.0 and < 3.0.0" }

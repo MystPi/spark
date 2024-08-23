@@ -114,12 +114,14 @@ fn expression() -> Parser(ast.Expression) {
 fn operator() -> Parser(ast.Expression) {
   pratt.expression(
     one_of: [
-      fn(_) { call() },
-      pre(11, token.Minus, ast.Neg),
-      pre(11, token.Exclamation, ast.Not),
+      fn(_) { primary() },
+      pre(12, token.Minus, ast.Neg),
+      pre(12, token.Exclamation, ast.Not),
     ],
     or_error: "I expected an operand value",
     and_then: [
+      call(11),
+      record_access(11),
       ir(10, token.Caret, binop(ast.Pow)),
       il(9, token.Star, binop(ast.Mul)),
       il(9, token.Slash, binop(ast.Div)),
@@ -140,6 +142,26 @@ fn operator() -> Parser(ast.Expression) {
   )
 }
 
+fn pre(precedence: Int, token: TokenType, op: ast.Unop) {
+  pratt.prefix(precedence, chomp.token(token), fn(a) { ast.Unop(op, a) })
+}
+
+fn il(
+  precedence: Int,
+  token: TokenType,
+  apply: fn(ast.Expression, ast.Expression) -> ast.Expression,
+) {
+  pratt.infix(pratt.Left(precedence), chomp.token(token), apply)
+}
+
+fn ir(
+  precedence: Int,
+  token: TokenType,
+  apply: fn(ast.Expression, ast.Expression) -> ast.Expression,
+) {
+  pratt.infix(pratt.Right(precedence), chomp.token(token), apply)
+}
+
 fn binop(op: ast.Binop) -> fn(ast.Expression, ast.Expression) -> ast.Expression {
   fn(a, b) { ast.Binop(op, a, b) }
 }
@@ -154,23 +176,28 @@ fn pipe_op(left: ast.Expression, right: ast.Expression) -> ast.Expression {
   }
 }
 
-fn call() -> Parser(ast.Expression) {
-  use callee <- do(primary())
-  use callee <- chomp.loop(callee)
-  chomp.one_of([
-    {
+fn call(precedence: Int) {
+  pratt.postfix_custom(
+    precedence,
+    fn(_) {
       use _ <- do(chomp.token(token.LParen))
       use args <- do_in(ctx.InCall, series_of(expression(), token.Comma))
       use _ <- do(chomp.token(token.RParen))
-      return(chomp.Continue(ast.Call(callee, args)))
+      return(args)
     },
-    {
+    ast.Call,
+  )
+}
+
+fn record_access(precedence: Int) {
+  pratt.postfix_custom(
+    precedence,
+    fn(_) {
       use _ <- do(chomp.token(token.Dot))
-      use field <- do(ident())
-      return(chomp.Continue(ast.RecordAccess(callee, field)))
+      ident()
     },
-  ])
-  |> chomp.or(chomp.Break(callee))
+    ast.RecordAccess,
+  )
 }
 
 fn primary() -> Parser(ast.Expression) {
@@ -560,24 +587,4 @@ fn sequence1(parser: Parser(a), sep: Parser(b)) -> Parser(List(a)) {
     |> chomp.or([]),
   )
   return([x, ..xs])
-}
-
-fn il(
-  precedence: Int,
-  token: TokenType,
-  apply: fn(ast.Expression, ast.Expression) -> ast.Expression,
-) {
-  pratt.infix(pratt.Left(precedence), chomp.token(token), apply)
-}
-
-fn ir(
-  precedence: Int,
-  token: TokenType,
-  apply: fn(ast.Expression, ast.Expression) -> ast.Expression,
-) {
-  pratt.infix(pratt.Right(precedence), chomp.token(token), apply)
-}
-
-fn pre(precedence: Int, token: TokenType, op: ast.Unop) {
-  pratt.prefix(precedence, chomp.token(token), fn(a) { ast.Unop(op, a) })
 }
